@@ -10,7 +10,7 @@ Dataset de origem: [Credit Score Classification (Kaggle)](https://www.kaggle.com
 
 ## Arquitetura do pipeline
 
-![Arquitetura do pipeline](imagens/arquitetura.svg)
+![Arquitetura do pipeline](arquitetura.svg)
 
 O projeto está sendo construído em etapas. Abaixo, o status real de cada uma:
 
