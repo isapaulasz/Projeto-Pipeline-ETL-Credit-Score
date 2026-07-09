@@ -1,0 +1,131 @@
+# ==========================================
+# Credenciais e variáveis sensíveis
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.json
+config/secrets*
+
+# AWS
+.aws/
+*.credentials
+
+# ==========================================
+# Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ambientes virtuais
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# ==========================================
+# Jupyter Notebook
+# ==========================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ==========================================
+# PySpark / Spark
+# ==========================================
+spark-warehouse/
+metastore_db/
+derby.log
+*.crc
+_SUCCESS
+
+# ==========================================
+# Airflow
+# ==========================================
+airflow.cfg
+airflow.db
+unittests.cfg
+logs/
+standalone_admin_password.txt
+airflow-webserver.pid
+*.log
+
+# ==========================================
+# Kafka
+# ==========================================
+kafka-logs/
+zookeeper-data/
+*.log.*
+
+# ==========================================
+# Dados (não versionar datasets locais/brutos)
+# ==========================================
+data/raw/
+data/processed/
+data/interim/
+*.csv
+*.parquet
+*.json
+*.avro
+!config/*.json
+!tests/fixtures/*.csv
+
+# ==========================================
+# AWS / Azure - arquivos de estado e cache
+# ==========================================
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# ==========================================
+# Sistema Operacional
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# IDEs e Editores
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Testes e cobertura
+# ==========================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+
+# ==========================================
+# Docker (se usar containers para Airflow/Kafka)
+# ==========================================
+docker-compose.override.yml
