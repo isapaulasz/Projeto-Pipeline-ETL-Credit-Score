@@ -1,4 +1,3 @@
-from spark_config import get_spark_session
 import kagglehub
 from kagglehub import KaggleDatasetAdapter
 import numpy as np
@@ -6,7 +5,7 @@ import pandas as pd
 import re
 import os
 import time
-from config import s3
+from src.config.config import s3
 
 def extrair_dados_kaggle(dataset_slug: str, file_path: str, max_tentativas: int = 3):
   tentativa = 0
@@ -142,6 +141,8 @@ def one_hot_encode_tipo_emprestimo(df):
         regex=True
     )
     df = df.drop(columns=['tipo_de_emprestimo'])
+    
+    return df
 
 def imputar_valores(df):
     colunas_puxar_mesmo_cliente = [
@@ -169,11 +170,9 @@ def imputar_valores(df):
 
     for col in colunas_categoricas:
         df[col] = df[col].fillna(df[col].mode()[0])
+        return df
 
 def transform(bucket, dt, domain="credit_score"):
-    spark = get_spark_session()
-
-    raw_path = f"s3a://{bucket}/raw/{domain}/dt={dt}/"
 
     # Lê train e test separadamente
     df_train = extrair_dados_kaggle("parisrohan/credit-score-classification", "train.csv")
@@ -230,12 +229,14 @@ def transform(bucket, dt, domain="credit_score"):
     df_staging = arredondar_numericos(df_staging)
     df_staging['tempo_historico_credito_meses'] = df_staging['tempo_historico_credito'].apply(converter_para_meses)
     df_staging = df_staging.drop(columns=['tempo_historico_credito'])
+    df_staging = one_hot_encode_tipo_emprestimo(df_staging)
+    df_staging = imputar_valores(df_staging)
+    ver_dados(df_staging)
 
     
-
-
     # --- Etapa final: validações, tipos, schema definitivo ---
     df_curated = df_staging.drop(columns=['nome', 'seguro_social_ssn'])
+    df_curated = df_curated.dropna()
 
     local_curated_file = "curated_temp.parquet"
     df_curated.to_parquet(local_curated_file, index=False)
