@@ -1,6 +1,6 @@
 # Pipeline ETL para Score de Crédito
 
-**Status geral: 🟡 Em andamento** | Bootcamp de Engenharia de Dados | 2026
+**Status geral: 🟡 Em andamento** | Bootcamp (Re)Start Data Girls | Trilha de Engenharia de Dados | 2026
 
 Pipeline de dados para estruturar informações de clientes bancários, permitindo que equipes de Analytics e Crédito utilizem os dados em modelos de score de crédito e análise de risco.
 
@@ -10,7 +10,7 @@ Dataset de origem: [Credit Score Classification (Kaggle)](https://www.kaggle.com
 
 ## Arquitetura do pipeline
 
-![Arquitetura do pipeline](arquitetura.svg)
+![Arquitetura do pipeline](images/arquitetura.svg)
 
 O projeto está sendo construído em etapas. Abaixo, o status real de cada uma:
 
@@ -31,19 +31,31 @@ O projeto está sendo construído em etapas. Abaixo, o status real de cada uma:
 
 ## O que já foi feito
 
-O notebook [`notebooks/Credit_Score_Classification.ipynb`](notebooks/Credit_Score_Classification.ipynb) contém:
+O pipeline foi dividido em dois scripts: [`extract.py`](extract.py) (extração e ingestão na camada raw) e [`transform.py`](transform.py) (limpeza, transformação e ingestão na camada curated).
 
-- **Extração**: carregamento dos conjuntos `train` e `test` diretamente do Kaggle com `kagglehub`, com retentativas automáticas em caso de falha.
-- **Unificação**: concatenação dos dois conjuntos, com marcação de origem (`train`/`test`).
+### Pipeline
+#### `extract.py` — Extração (camada raw)
+- **Extração**: download do dataset do Kaggle via `kagglehub.dataset_download`.
+- **Ingestão no Data Lake**: upload de todos os arquivos `.csv` encontrados para o bucket **AWS S3**, particionado por domínio e data (`raw/{domain}/dt={data}/`).
+- **Rastreabilidade**: a data de extração (`dt`) é retornada pela função para ser reaproveitada pelas etapas seguintes do pipeline.
+
+#### `transform.py` — Transformação (camada curated)
+- **Extração**: carregamento dos conjuntos `train` e `test` diretamente do Kaggle com `kagglehub`, com até 3 retentativas automáticas (com backoff) em caso de falha.
+- **Unificação**: concatenação dos dois conjuntos, com marcação de origem (`train`/`test`) e alinhamento de colunas (inclusão de `Credit_Score` vazio em `test` antes da junção).
 - **Padronização**: renomeação de colunas para português, limpeza de espaços/underscores e normalização de valores nulos disfarçados (`"NM"`, `"!@9#%8"`, `"_______"`, etc.).
 - **Tipagem**: conversão de colunas monetárias para `float` e de colunas de contagem para `Int64`.
-- **Tratamento de outliers**: valores impossíveis (idade > 110, valores negativos, taxas fora do esperado) convertidos em nulos via regras de negócio e IQR.
-- **Engenharia de atributos**: conversão de `tempo de histórico de crédito` (texto "X anos e Y meses") para número de meses; one-hot encoding da coluna de tipos de empréstimo.
-- **Imputação**: preenchimento de nulos por moda (dados do mesmo cliente) e por mediana (variáveis numéricas contínuas).
-- **Exportação**: dataset final salvo em formato `.parquet` (compressão gzip), pronto para consumo por outras equipes.
-- **Processamento distribuído**: pipeline adaptado para **PySpark**, preparando o processamento para volumes maiores.
-- **Data Lake**: envio dos dados processados para um bucket **AWS S3**.
-- **Segurança/Acesso**: controle de acesso configurado via **AWS IAM**.
+- **Tratamento de outliers**: valores impossíveis (idade > 110, valores negativos, taxas fora do esperado, renda anual acima do limite via IQR) convertidos em nulos via regras de negócio.
+- **Arredondamento**: padronização de casas decimais para colunas monetárias e para a taxa de utilização de crédito.
+- **Engenharia de atributos**: conversão de `tempo de histórico de crédito` (texto "X Years and Y Months") para número de meses; one-hot encoding da coluna de tipos de empréstimo (`tipo_de_emprestimo`).
+- **Imputação**: preenchimento de nulos por moda (dados do mesmo cliente, via `id_cliente`) e por mediana (variáveis numéricas contínuas), além de moda para variáveis categóricas.
+- **Anonimização**: remoção das colunas `nome` e `seguro_social_ssn` antes da exportação final.
+- **Exportação**: dataset final salvo em formato `.parquet` e enviado ao bucket S3 na camada `curated/{domain}/dt={data}/`.
+
+### Infraestrutura
+- **Processamento distribuído**: sessão **PySpark** inicializada via `spark_config.get_spark_session` (integração em andamento — as transformações atuais ainda rodam em `pandas`).
+- **Data Lake**: leitura da camada raw (`s3a://{bucket}/raw/{domain}/dt={data}/`) e escrita da camada curated, ambas em **AWS S3**.
+- **Segurança/Acesso**: controle de acesso configurado via AWS IAM e acesso ao S3 via `boto3`/cliente `s3` configurado em `config.py`. 
+
 
 ## Próximos passos
 
@@ -92,12 +104,3 @@ pipeline-etl-credito/
 
 > Para que os imports funcionem (ex: `from src.etl.extract import ...`), adicione um arquivo `__init__.py` vazio em `src/`, `src/config/` e `src/etl/`.
 
-## Como executar
-
-```bash
-pip install kagglehub[pandas-datasets] pandas numpy
-jupyter notebook notebooks/Credit_Score_Classification.ipynb
-```
-
----
-*Projeto desenvolvido como parte do Bootcamp de Engenharia de Dados (2026).*

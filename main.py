@@ -1,5 +1,5 @@
-from extract import extract
-from transform import transform
+from src.etl.extract import extract
+from src.etl.transform import transform
 
 bucket = "datagirlsfinance-creditscore"
 
