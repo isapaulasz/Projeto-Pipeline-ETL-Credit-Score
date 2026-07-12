@@ -3,6 +3,7 @@ import os
 import boto3
 
 load_dotenv()  # carrega o .env para as variáveis de ambiente
+os.environ["KAGGLE_API_TOKEN"] = os.getenv("KAGGLE_API_TOKEN")
 
 s3 = boto3.client(
     's3',

@@ -48,8 +48,8 @@
 
   <!-- 7. Airflow orchestration (bottom, spanning) -->
   <rect x="200" y="240" width="580" height="60" rx="8" fill="#c6efce" stroke="#aaaaaa"/>
-  <text x="490" y="265" font-size="13" text-anchor="middle" fill="#222">Orquestração com Apache Airflow</text>
-  <text x="490" y="283" font-size="12" text-anchor="middle" fill="#888">(planejado — agenda e monitora todas as etapas acima)</text>
+  <text x="490" y="265" font-size="13" text-anchor="middle" fill="#222">Apache Airflow</text>
+  <text x="490" y="278" font-size="12" text-anchor="middle" fill="#444">orquestração</text>
 
   <!-- IAM box -->
   <rect x="20" y="240" width="150" height="60" rx="8" fill="#c6efce" stroke="#7ab87f"/>
