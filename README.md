@@ -21,8 +21,8 @@ O projeto está sendo construído em etapas. Abaixo, o status real de cada uma:
 | Armazenamento local | Exportação do dataset curado em `.parquet` | ✅ Concluído |
 | Processamento distribuído | Reescrita/adaptação do pipeline em PySpark | ✅ Concluído |
 | Data Lake | Armazenamento em AWS S3 | ✅ Concluído |
-| Data Warehouse | Carga estruturada em AWS Redshift | 🟡 Em andamento |
-| Orquestração | Automação e agendamento das etapas com Apache Airflow | 🔲 Planejado |
+| Data Warehouse | Carga estruturada em AWS Redshift | ✅ Concluído |
+| Orquestração | Automação e agendamento das etapas com Apache Airflow | ✅ Concluído |
 | Segurança/Acesso | Gestão de permissões via AWS IAM | ✅ Concluído |
 
 > Este README é atualizado conforme o pipeline evolui. A versão atual cobre a **extração e limpeza dos dados em Python**, o **processamento em PySpark**, o **envio dos dados ao Data Lake (AWS S3)** e o **controle de acesso via AWS IAM**. A modelagem e carga no Data Warehouse (AWS Redshift) está em andamento.
@@ -54,21 +54,14 @@ O pipeline foi dividido em dois scripts: [`extract.py`](extract.py) (extração 
 ### Infraestrutura
 - **Processamento distribuído**: sessão **PySpark** inicializada via `spark_config.get_spark_session` (integração em andamento — as transformações atuais ainda rodam em `pandas`).
 - **Data Lake**: leitura da camada raw (`s3a://{bucket}/raw/{domain}/dt={data}/`) e escrita da camada curated, ambas em **AWS S3**.
-- **Segurança/Acesso**: controle de acesso configurado via AWS IAM e acesso ao S3 via `boto3`/cliente `s3` configurado em `config.py`. 
+- **Segurança/Acesso**: controle de acesso configurado via AWS IAM e acesso ao S3 via `boto3`/cliente `s3` configurado em `config.py`.
+- **Data Warehouse** modelagem e carregamento de dados no  AWS Redshift.
+- Orquestração de todas as etapas com **Apache Airflow**.
 
-
-## Próximos passos
-
-1. Modelar e carregar os dados no **Data Warehouse** (AWS Redshift) — *em andamento*.
-2. Orquestrar todas as etapas com **Apache Airflow**.
 
 ## Stack
 
-**Já utilizado:**
-Python, pandas, numpy, kagglehub, PySpark, AWS (S3, IAM)
-
-**Planejado para as próximas etapas:**
-AWS Redshift, Apache Airflow
+Python | pandas | numpy | kagglehub | PySpark | AWS (S3, IAM, Redshift Serveless) | Apache Airflow
 
 ## Estrutura do repositório
 
