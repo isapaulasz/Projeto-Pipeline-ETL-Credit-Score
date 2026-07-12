@@ -1,6 +1,6 @@
 # Pipeline ETL para Score de Crédito
 
-**Status geral: 🟡 Em andamento** | Bootcamp (Re)Start Data Girls | Trilha de Engenharia de Dados | 2026
+**Status geral: 🟢 Concluído** | Bootcamp (Re)Start Data Girls | Trilha de Engenharia de Dados | 2026
 
 Pipeline de dados para estruturar informações de clientes bancários, permitindo que equipes de Analytics e Crédito utilizem os dados em modelos de score de crédito e análise de risco.
 
