@@ -1,0 +1,6 @@
+pandas
+numpy
+kagglehub[pandas-datasets]
+pyspark
+boto3
+python-dotenv

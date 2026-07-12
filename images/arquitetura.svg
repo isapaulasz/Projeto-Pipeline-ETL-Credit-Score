@@ -31,23 +31,20 @@
   <text x="455" y="110" font-size="13" text-anchor="middle" fill="#222">Dados Curados</text>
   <text x="455" y="128" font-size="12" text-anchor="middle" fill="#444">arquivo .parquet</text>
 
-  <!-- 4. PySpark / Kafka -->
-  <rect x="560" y="80" width="150" height="70" rx="8" fill="#ffeb9c" stroke="#d9b64e"/>
-  <text x="635" y="105" font-size="13" text-anchor="middle" fill="#222">Processamento</text>
-  <text x="635" y="122" font-size="12" text-anchor="middle" fill="#444">PySpark + Kafka</text>
-  <text x="635" y="138" font-size="12" text-anchor="middle" fill="#444">(próxima etapa)</text>
+  <!-- 4. PySpark -->
+  <rect x="560" y="80" width="150" height="70" rx="8" fill="#c6efce" stroke="#7ab87f"/>
+  <text x="635" y="110" font-size="13" text-anchor="middle" fill="#222">Processamento</text>
+  <text x="635" y="128" font-size="12" text-anchor="middle" fill="#444">PySpark</text>
 
   <!-- 5. Data Lake -->
-  <rect x="750" y="30" width="220" height="70" rx="8" fill="#e6e6e6" stroke="#aaaaaa"/>
-  <text x="860" y="55" font-size="13" text-anchor="middle" fill="#222">Data Lake</text>
-  <text x="860" y="73" font-size="12" text-anchor="middle" fill="#444">AWS S3 / Azure Data Lake Gen2</text>
-  <text x="860" y="89" font-size="12" text-anchor="middle" fill="#888">(planejado)</text>
+  <rect x="750" y="30" width="220" height="70" rx="8" fill="#c6efce" stroke="#7ab87f"/>
+  <text x="860" y="60" font-size="13" text-anchor="middle" fill="#222">Data Lake</text>
+  <text x="860" y="78" font-size="12" text-anchor="middle" fill="#444">AWS S3</text>
 
   <!-- 6. Data Warehouse -->
-  <rect x="750" y="120" width="220" height="70" rx="8" fill="#e6e6e6" stroke="#aaaaaa"/>
-  <text x="860" y="145" font-size="13" text-anchor="middle" fill="#222">Data Warehouse</text>
-  <text x="860" y="163" font-size="12" text-anchor="middle" fill="#444">AWS Redshift / Azure Synapse</text>
-  <text x="860" y="179" font-size="12" text-anchor="middle" fill="#888">(planejado)</text>
+  <rect x="750" y="120" width="220" height="70" rx="8" fill="#ffeb9c" stroke="#d9b64e"/>
+  <text x="860" y="150" font-size="13" text-anchor="middle" fill="#222">Data Warehouse</text>
+  <text x="860" y="168" font-size="12" text-anchor="middle" fill="#444">AWS Redshift</text>
 
   <!-- 7. Airflow orchestration (bottom, spanning) -->
   <rect x="200" y="240" width="580" height="60" rx="8" fill="#e6e6e6" stroke="#aaaaaa"/>
@@ -55,9 +52,9 @@
   <text x="490" y="283" font-size="12" text-anchor="middle" fill="#888">(planejado — agenda e monitora todas as etapas acima)</text>
 
   <!-- IAM box -->
-  <rect x="20" y="240" width="150" height="60" rx="8" fill="#e6e6e6" stroke="#aaaaaa"/>
-  <text x="95" y="263" font-size="13" text-anchor="middle" fill="#222">AWS IAM</text>
-  <text x="95" y="280" font-size="12" text-anchor="middle" fill="#888">(controle de acesso)</text>
+  <rect x="20" y="240" width="150" height="60" rx="8" fill="#c6efce" stroke="#7ab87f"/>
+  <text x="95" y="266" font-size="13" text-anchor="middle" fill="#222">AWS IAM</text>
+  <text x="95" y="283" font-size="12" text-anchor="middle" fill="#444">controle de acesso</text>
 
   <!-- Arrows -->
   <line x1="160" y1="115" x2="198" y2="115" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>

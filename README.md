@@ -19,13 +19,13 @@ O projeto está sendo construído em etapas. Abaixo, o status real de cada uma:
 | Extração | Coleta dos dados via `kagglehub` (train/test) | ✅ Concluído |
 | Transformação | Limpeza, padronização de tipos, tratamento de outliers, imputação de nulos, one-hot encoding | ✅ Concluído |
 | Armazenamento local | Exportação do dataset curado em `.parquet` | ✅ Concluído |
-| Processamento distribuído | Reescrita/adaptação do pipeline em PySpark, ingestão via Kafka | 🔲 Planejado |
-| Data Lake | Armazenamento em AWS S3 e Azure Data Lake Storage Gen2 | 🔲 Planejado |
-| Data Warehouse | Carga estruturada em AWS Redshift e Azure Synapse Analytics | 🔲 Planejado |
+| Processamento distribuído | Reescrita/adaptação do pipeline em PySpark | ✅ Concluído |
+| Data Lake | Armazenamento em AWS S3 | ✅ Concluído |
+| Data Warehouse | Carga estruturada em AWS Redshift | 🟡 Em andamento |
 | Orquestração | Automação e agendamento das etapas com Apache Airflow | 🔲 Planejado |
-| Segurança/Acesso | Gestão de permissões via AWS IAM | 🔲 Planejado |
+| Segurança/Acesso | Gestão de permissões via AWS IAM | ✅ Concluído |
 
-> Este README é atualizado conforme o pipeline evolui. A versão atual cobre apenas a etapa de **extração e limpeza dos dados em Python**, feita no notebook desta pasta.
+> Este README é atualizado conforme o pipeline evolui. A versão atual cobre a **extração e limpeza dos dados em Python**, o **processamento em PySpark**, o **envio dos dados ao Data Lake (AWS S3)** e o **controle de acesso via AWS IAM**. A modelagem e carga no Data Warehouse (AWS Redshift) está em andamento.
 
 ---
 
@@ -41,34 +41,56 @@ O notebook [`notebooks/Credit_Score_Classification.ipynb`](notebooks/Credit_Scor
 - **Engenharia de atributos**: conversão de `tempo de histórico de crédito` (texto "X anos e Y meses") para número de meses; one-hot encoding da coluna de tipos de empréstimo.
 - **Imputação**: preenchimento de nulos por moda (dados do mesmo cliente) e por mediana (variáveis numéricas contínuas).
 - **Exportação**: dataset final salvo em formato `.parquet` (compressão gzip), pronto para consumo por outras equipes.
+- **Processamento distribuído**: pipeline adaptado para **PySpark**, preparando o processamento para volumes maiores.
+- **Data Lake**: envio dos dados processados para um bucket **AWS S3**.
+- **Segurança/Acesso**: controle de acesso configurado via **AWS IAM**.
 
 ## Próximos passos
 
-1. Migrar o processamento para **PySpark**, preparando o pipeline para volumes maiores.
-2. Configurar ingestão via **Kafka** para simular dados chegando em stream.
-3. Subir a infraestrutura de **Data Lake** (AWS S3 / Azure Data Lake Storage Gen2).
-4. Modelar e carregar os dados no **Data Warehouse** (AWS Redshift / Azure Synapse Analytics).
-5. Orquestrar todas as etapas com **Apache Airflow**.
-6. Configurar controle de acesso com **AWS IAM**.
+1. Modelar e carregar os dados no **Data Warehouse** (AWS Redshift) — *em andamento*.
+2. Orquestrar todas as etapas com **Apache Airflow**.
 
 ## Stack
 
 **Já utilizado:**
-Python, pandas, numpy, kagglehub
+Python, pandas, numpy, kagglehub, PySpark, AWS (S3, IAM)
 
 **Planejado para as próximas etapas:**
-PySpark, Apache Kafka, Apache Airflow, AWS (IAM, S3, Redshift), Azure (Data Lake Storage Gen2, Synapse Analytics)
+AWS Redshift, Apache Airflow
 
 ## Estrutura do repositório
+
+Com a adição dos módulos de PySpark e AWS, a recomendação é organizar o código em pastas por responsabilidade, em vez de deixar tudo solto na raiz:
 
 ```
 pipeline-etl-credito/
 ├── notebooks/
 │   └── Credit_Score_Classification.ipynb
+├── src/
+│   ├── config/
+│   │   ├── config.py          # cliente S3 (boto3)
+│   │   └── spark_config.py    # sessão Spark configurada para o S3
+│   └── etl/
+│       ├── extract.py
+│       ├── transform.py
+│       └── load.py
 ├── imagens/
 │   └── arquitetura.svg
+├── main.py                    # ponto de entrada, orquestra extract → transform → load
+├── .env.example
+├── requirements.txt
 └── README.md
 ```
+
+**Por que essa organização:**
+
+- **`src/config/`**: agrupa tudo relacionado a configuração e credenciais (cliente S3, sessão Spark), separado da lógica de negócio do ETL.
+- **`src/etl/`**: agrupa as três etapas do pipeline (`extract.py`, `transform.py`, `load.py`), facilitando encontrar e testar cada uma isoladamente.
+- **`main.py` na raiz**: continua sendo o ponto de entrada do projeto (`python main.py`), importando as funções de `src/etl` e `src/config`.
+- **`.env.example`**: versiona as chaves esperadas (sem os valores reais) para facilitar a configuração de quem for rodar o projeto — o `.env` real continua fora do Git.
+- **`requirements.txt`**: com `pyspark`, `boto3`, `python-dotenv` e demais dependências, para facilitar a instalação com `pip install -r requirements.txt`.
+
+> Para que os imports funcionem (ex: `from src.etl.extract import ...`), adicione um arquivo `__init__.py` vazio em `src/`, `src/config/` e `src/etl/`.
 
 ## Como executar
 
